@@ -2,32 +2,27 @@ name: "CodeQL Analysis"
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   analyze:
+    name: Analyze
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Set up CodeQL
-        uses: github/codeql-action/setup-codeql@v2
-      
-      - name: Initialize CodeQL database
-        run: |
-          codeql database create --language=python codeql-db
-      
-      - name: Perform CodeQL analysis
-        run: |
-          codeql analyze --database=codeql-db --format=sarif-latest --output=codeql-results.sarif
-      
-      - name: Upload CodeQL results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: codeql-results.sarif
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
